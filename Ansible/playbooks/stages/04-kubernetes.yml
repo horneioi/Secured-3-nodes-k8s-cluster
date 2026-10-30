@@ -4,6 +4,9 @@
 - name: Configure Kubernetes runtime
   ansible.builtin.import_playbook: ../kubernetes/runtime.yml
 
+- name: Configure Kubernetes tools
+  ansible.builtin.import_playbook: ../kubernetes/tools.yml
+
 - name: Initialize Kubernetes control plane
   ansible.builtin.import_playbook: ../kubernetes/control-plane.yml
 
@@ -16,5 +19,3 @@
 - name: Join Kubernetes workers
   ansible.builtin.import_playbook: ../kubernetes/worker.yml
 
-- name: Configure Kubernetes tools
-  ansible.builtin.import_playbook: ../kubernetes/tools.yml
