@@ -1,0 +1,33 @@
+---
+- name: Get installed kubeadm version
+  ansible.builtin.command:
+    cmd: kubeadm version -o short
+  register: kubeadm_version_result
+  changed_when: false
+
+- name: Set Kubernetes version fact
+  ansible.builtin.set_fact:
+    kubeadm_version: "{{ kubeadm_version_result.stdout }}"
+
+- name: Create kubeadm configuration
+  ansible.builtin.template:
+    src: kubeadm-config.yaml.j2
+    dest: "{{ kubernetes_config_path }}"
+    owner: root
+    group: root
+    mode: "0600"
+
+- name: Validate kubeadm configuration
+  ansible.builtin.command:
+    cmd: "kubeadm config validate --config {{ kubernetes_config_path }}"
+  changed_when: false
+
+- name: Check whether control plane is already initialized
+  ansible.builtin.stat:
+    path: "{{ kubernetes_admin_config }}"
+  register: kubernetes_admin_config_stat
+
+- name: Initialize Kubernetes control plane
+  ansible.builtin.command:
+    cmd: "kubeadm init --config {{ kubernetes_config_path }} --skip-phases=addon/kube-proxy"
+  when: not kubernetes_admin_config_stat.stat.exists

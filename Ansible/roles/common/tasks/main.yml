@@ -1,0 +1,12 @@
+
+- name: set up HTTP_PROXY variables 
+  ansible.builtin.blockinfile:
+    path: /etc/environment
+    marker: "# {mark} ANSIBLE PROXY"
+    block: |
+      HTTP_PROXY={{ proxy_http_url }}
+      HTTPS_PROXY={{ proxy_http_url }}
+      http_proxy={{ proxy_http_url }}
+      https_proxy={{ proxy_http_url }}
+      NO_PROXY={{ no_proxy }}
+      no_proxy={{ no_proxy }}

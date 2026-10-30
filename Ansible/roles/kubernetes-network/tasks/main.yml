@@ -1,0 +1,39 @@
+---
+- name: Add Cilium Helm repository
+  ansible.builtin.command:
+    cmd: helm repo add cilium {{ cilium_helm_repo }}
+  register: cilium_repo
+  changed_when: "'has been added' in cilium_repo.stdout"
+
+- name: Update Helm repositories
+  ansible.builtin.command:
+    cmd: helm repo update cilium
+  changed_when: false
+
+- name: Create Cilium Helm values file
+  ansible.builtin.template:
+    src: values.yaml.j2
+    dest: /etc/kubernetes/cilium-values.yaml
+    owner: root
+    group: root
+    mode: "0600"
+
+- name: Install or upgrade Cilium
+  ansible.builtin.command:
+    cmd: >-
+      helm upgrade --install cilium
+      oci://quay.io/cilium/charts/cilium
+      --version {{ cilium_version }}
+      --namespace kube-system
+      --values /etc/kubernetes/cilium-values.yaml
+  environment:
+    KUBECONFIG: /etc/kubernetes/admin.conf
+  register: cilium_install
+  changed_when: false
+
+- name: Generate kubeadm join command
+  ansible.builtin.command:
+    cmd: kubeadm token create --print-join-command
+  register: kubeadm_join_command
+  changed_when: false
+  no_log: true

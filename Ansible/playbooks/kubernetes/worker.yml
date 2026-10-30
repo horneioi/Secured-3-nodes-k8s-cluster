@@ -1,0 +1,16 @@
+- name: Generate Kubernetes join command
+  hosts: control-plane
+  become: true
+  tasks:
+    - name: Create join command
+      ansible.builtin.command:
+        cmd: kubeadm token create --print-join-command
+      register: kubeadm_join_command
+      changed_when: false
+      no_log: true
+
+- name: Join Kubernetes worker nodes
+  hosts: workers
+  become: true
+  roles:
+    - kubernetes-worker

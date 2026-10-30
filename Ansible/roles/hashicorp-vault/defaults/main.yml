@@ -1,0 +1,12 @@
+vault_version: "1.20.4"
+
+vault_container_name: vault
+vault_project_dir: /opt/vault
+vault_data_dir: /opt/vault/data
+vault_config_dir: /opt/vault/config
+
+vault_api_addr: "http://192.168.0.240:8200"
+vault_cluster_addr: "https://192.168.0.240:8201"
+
+vault_api_port: 8200
+vault_cluster_port: 8201

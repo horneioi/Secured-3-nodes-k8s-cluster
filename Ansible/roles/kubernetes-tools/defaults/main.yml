@@ -1,0 +1,7 @@
+kubernetes_apt_keyring: /etc/apt/keyrings/kubernetes-apt-keyring.asc
+kubernetes_apt_repository: /etc/apt/sources.list.d/kubernetes.list
+
+kubernetes_packages:
+  - kubelet
+  - kubeadm
+  - kubectl

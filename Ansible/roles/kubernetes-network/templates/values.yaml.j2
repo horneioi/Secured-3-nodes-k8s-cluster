@@ -1,0 +1,10 @@
+ipam:
+  mode: kubernetes
+
+kubeProxyReplacement: true
+
+k8sServiceHost: "{{ kubernetes_api_endpoint }}"
+k8sServicePort: 6443
+
+operator:
+  replicas: 1

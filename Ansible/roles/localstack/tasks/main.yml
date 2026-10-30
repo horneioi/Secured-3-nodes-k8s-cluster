@@ -1,0 +1,22 @@
+- name: Create LocalStack directory
+  ansible.builtin.file:
+    path: "{{ localstack_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Deploy LocalStack Compose configuration
+  ansible.builtin.template:
+    src: compose.yml.j2
+    dest: "{{ localstack_dir }}/compose.yml"
+    owner: root
+    group: root
+    mode: "0600"
+  no_log: true
+
+- name: Start LocalStack
+  community.docker.docker_compose_v2:
+    project_src: "{{ localstack_dir }}"
+    state: present
+    pull: missing

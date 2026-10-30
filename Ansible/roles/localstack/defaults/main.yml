@@ -1,0 +1,3 @@
+localstack_dir: /opt/localstack
+localstack_port: 4566
+localstack_region: eu-central-1

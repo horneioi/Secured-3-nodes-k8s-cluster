@@ -1,0 +1,49 @@
+---
+- name: Create Vault directories
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
+  loop:
+    - path: "{{ vault_project_dir }}"
+      owner: root
+      group: root
+      mode: "0755"
+
+    - path: "{{ vault_config_dir }}"
+      owner: root
+      group: root
+      mode: "0755"
+
+    - path: "{{ vault_data_dir }}"
+      owner: "100"
+      group: "100"
+      mode: "0750"
+
+- name: Deploy Vault configuration
+  ansible.builtin.template:
+    src: vault.hcl.j2
+    dest: "{{ vault_config_dir }}/vault.hcl"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Deploy Vault Compose file
+  ansible.builtin.template:
+    src: compose.yml.j2
+    dest: "{{ vault_project_dir }}/compose.yml"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Start Vault container
+  ansible.builtin.command:
+    cmd: docker compose up -d
+    chdir: "{{ vault_project_dir }}"
+  register: vault_compose_result
+  changed_when: >-
+    'Created' in vault_compose_result.stdout or
+    'Started' in vault_compose_result.stdout or
+    'Recreated' in vault_compose_result.stdout

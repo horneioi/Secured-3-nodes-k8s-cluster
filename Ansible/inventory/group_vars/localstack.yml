@@ -1,0 +1,1 @@
+localstack_auth_token: "{{ lookup('env', 'LOCALSTACK_AUTH_TOKEN') }}"

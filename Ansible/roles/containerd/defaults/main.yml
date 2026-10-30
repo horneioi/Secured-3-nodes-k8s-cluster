@@ -1,0 +1,4 @@
+containerd_package: containerd
+containerd_config_path: /etc/containerd/config.toml
+containerd_proxy_dir: /etc/systemd/system/containerd.service.d
+containerd_proxy_config: proxy.conf

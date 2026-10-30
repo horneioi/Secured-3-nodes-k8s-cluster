@@ -1,0 +1,16 @@
+services:
+  localstack:
+    image: localstack/localstack:latest
+    container_name: localstack
+    ports:
+      - "{{ localstack_port }}:4566"
+    environment:
+      LOCALSTACK_AUTH_TOKEN: "{{ localstack_auth_token }}"
+      SERVICES: s3,sts
+      AWS_DEFAULT_REGION: "{{ localstack_region }}"
+      DEBUG: "0"
+    volumes:
+      - localstack_data:/var/lib/localstack
+
+volumes:
+  localstack_data:

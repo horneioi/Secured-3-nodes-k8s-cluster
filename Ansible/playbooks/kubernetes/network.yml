@@ -1,0 +1,5 @@
+- name: Install Cilium CNI
+  hosts: control-plane
+  become: true
+  roles:
+    - kubernetes-network

@@ -1,0 +1,7 @@
+- ansible.builtin.import_playbook: stages/01-prepare.yml
+
+- ansible.builtin.import_playbook: stages/02-localstack.yml
+
+- ansible.builtin.import_playbook: stages/03-hashicorp-vault.yml
+
+- ansible.builtin.import_playbook: stages/04-kubernetes.yml

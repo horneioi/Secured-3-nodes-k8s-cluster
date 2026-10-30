@@ -1,0 +1,7 @@
+- name: Deploy HashiCorp Vault
+  hosts: localstack
+  become: true
+  roles:
+    - hashicorp-vault
+
+- ansible.builtin.import_playbook: ../hashicorp-vault-init.yml

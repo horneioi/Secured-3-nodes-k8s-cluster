@@ -1,0 +1,2 @@
+proxy_http_url: "{{ lookup('env', 'PROXY_HTTP_URL') }}"
+no_proxy: "localhost,127.0.0.1,::1,192.168.0.240,192.168.0.132,192.168.0.124,192.168.0.183,.localstack.cloud,.localhost.localstack.cloud,.node"

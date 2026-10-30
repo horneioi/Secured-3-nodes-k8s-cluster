@@ -1,0 +1,8 @@
+kubernetes_version: "1.35"
+kubernetes_pod_cidr: "10.244.0.0/16"
+kubernetes_service_cidr: "10.96.0.0/12"
+kubernetes_api_endpoint: "192.168.0.132"
+
+cilium_version: "1.20.4"
+cilium_pod_cidr: "10.244.0.0/16"
+cilium_kube_proxy_replacement: true

@@ -1,0 +1,92 @@
+- name: Initialize and unseal HashiCorp Vault
+  hosts: localstack
+  become: true
+
+  vars:
+    vault_container_name: vault
+    vault_init_file: /root/vault-init.json
+    vault_key_shares: 5
+    vault_key_threshold: 3
+
+  tasks:
+    - name: Check Vault initialization status
+      ansible.builtin.command:
+        argv:
+          - docker
+          - exec
+          - "{{ vault_container_name }}"
+          - vault
+          - status
+          - -format=json
+      register: vault_status
+      changed_when: false
+      failed_when: false
+
+    - name: Check whether initialization file already exists
+      ansible.builtin.stat:
+        path: "{{ vault_init_file }}"
+      register: vault_init_file_stat
+
+    - name: Stop if Vault is initialized but keys are missing
+      ansible.builtin.fail:
+        msg: >-
+          Vault is already initialized, but {{ vault_init_file }} is missing.
+          Do not run operator init again. Restore the original unseal keys.
+      when:
+        - (vault_status.stdout | from_json).initialized
+        - not vault_init_file_stat.stat.exists
+
+    - name: Initialize Vault and save keys
+      ansible.builtin.shell: |
+        umask 077
+        docker exec {{ vault_container_name }} vault operator init \
+          -key-shares={{ vault_key_shares }} \
+          -key-threshold={{ vault_key_threshold }} \
+          -format=json > {{ vault_init_file }}
+      args:
+        executable: /bin/bash
+      when: not (vault_status.stdout | from_json).initialized
+      changed_when: true
+      no_log: true
+
+    - name: Read initialization file
+      ansible.builtin.slurp:
+        src: "{{ vault_init_file }}"
+      register: vault_init_raw
+      no_log: true
+
+    - name: Unseal Vault
+      ansible.builtin.command:
+        argv:
+          - docker
+          - exec
+          - "{{ vault_container_name }}"
+          - vault
+          - operator
+          - unseal
+          - "{{ item }}"
+      loop: "{{ (vault_init_raw.content | b64decode | from_json).unseal_keys_b64[:vault_key_threshold] }}"
+      register: vault_unseal_result
+      changed_when: true
+      no_log: true
+
+    - name: Check Vault status after unsealing
+      ansible.builtin.command:
+        argv:
+          - docker
+          - exec
+          - "{{ vault_container_name }}"
+          - vault
+          - status
+          - -format=json
+      register: vault_final_status
+      changed_when: false
+      failed_when: false
+
+    - name: Verify Vault is initialized and unsealed
+      ansible.builtin.assert:
+        that:
+          - (vault_final_status.stdout | from_json).initialized
+          - not (vault_final_status.stdout | from_json).sealed
+        fail_msg: "Vault initialization or unsealing failed."
+        success_msg: "Vault is initialized and unsealed."

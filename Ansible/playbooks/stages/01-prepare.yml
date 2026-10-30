@@ -1,0 +1,12 @@
+- name: Prepare infrastructure
+  hosts: all
+  become: true
+  roles:
+    - common
+
+- name: Deploy LocalStack infrastructure
+  hosts: localstack
+  become: true
+  roles:
+    - docker
+    - localstack

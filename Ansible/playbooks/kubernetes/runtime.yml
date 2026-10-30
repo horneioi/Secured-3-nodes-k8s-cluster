@@ -1,0 +1,7 @@
+- name: Install Kubernetes container runtime
+  hosts: kubernetes
+  become: true
+
+  roles:
+    - common
+    - containerd
