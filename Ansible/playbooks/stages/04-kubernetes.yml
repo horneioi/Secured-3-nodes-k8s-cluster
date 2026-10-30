@@ -19,3 +19,5 @@
 - name: Join Kubernetes workers
   ansible.builtin.import_playbook: ../kubernetes/worker.yml
 
+- name: Install ArgoCD into Cluster
+  ansible.builtin.import_playbook: ../kubernetes/argocd.yml

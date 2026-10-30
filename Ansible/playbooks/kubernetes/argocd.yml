@@ -1,0 +1,5 @@
+- name: Install Argo CD
+  hosts: control-plane
+  become: true
+  roles:
+    - argocd

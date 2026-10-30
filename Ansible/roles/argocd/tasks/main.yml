@@ -1,0 +1,29 @@
+- name: Install Python Kubernetes library
+  ansible.builtin.apt:
+    name: python3-kubernetes
+    state: present
+    update_cache: true
+
+- name: Add Argo CD Helm repository
+  kubernetes.core.helm_repository:
+    name: argo
+    repo_url: "{{ argocd_chart_repository }}"
+
+- name: Create Argo CD namespace
+  kubernetes.core.k8s:
+    name: "{{ argocd_namespace }}"
+    api_version: v1
+    kind: Namespace
+    state: present
+    kubeconfig: /etc/kubernetes/admin.conf
+
+- name: Deploy Argo CD
+  kubernetes.core.helm:
+    name: argocd
+    chart_ref: "argo/{{ argocd_chart_name }}"
+    chart_version: "{{ argocd_chart_version }}"
+    release_namespace: "{{ argocd_namespace }}"
+    create_namespace: false
+    values: "{{ lookup('template', 'values.yaml.j2') | from_yaml }}"
+    state: present
+    kubeconfig: /etc/kubernetes/admin.conf

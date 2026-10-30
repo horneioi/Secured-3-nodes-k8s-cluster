@@ -1,0 +1,14 @@
+global:
+  domain: argocd.local
+
+configs:
+  params:
+    server.insecure: false
+
+server:
+  service:
+    type: {{ argocd_server_service_type }}
+    servicePortHttp: 80
+    servicePortHttps: 443
+    nodePortHttp: {{ argocd_server_http_nodeport }}
+    nodePortHttps: {{ argocd_server_https_nodeport }}

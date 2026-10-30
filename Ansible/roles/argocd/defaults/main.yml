@@ -1,0 +1,11 @@
+argocd_namespace: argocd
+
+argocd_chart_repository: https://argoproj.github.io/argo-helm
+argocd_chart_name: argo-cd
+
+# Зафиксируем версию chart после выбора.
+argocd_chart_version: "10.10.3"
+
+argocd_server_service_type: NodePort
+argocd_server_http_nodeport: 32080
+argocd_server_https_nodeport: 32443
