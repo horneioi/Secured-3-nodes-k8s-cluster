@@ -12,3 +12,6 @@
     - Ansible via apt
 ## Playbooks Description
     - ...
+## Updates
+- 31.10.26: added Victoria Metrics
+- ToDo: Alerting tg

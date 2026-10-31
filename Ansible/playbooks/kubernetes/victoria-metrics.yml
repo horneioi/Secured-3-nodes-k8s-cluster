@@ -1,0 +1,5 @@
+- name: Install VictoriaMetrics
+  hosts: control-plane
+  become: true
+  roles:
+    - victoria-metrics

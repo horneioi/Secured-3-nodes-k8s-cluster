@@ -1,0 +1,21 @@
+victoria_metrics_namespace: monitoring
+
+victoria_metrics_chart_repository: https://victoriametrics.github.io/helm-charts
+victoria_metrics_chart_name: victoria-metrics-k8s-stack
+victoria_metrics_chart_version: "0.97.0"
+
+victoria_metrics_release_name: vmks
+
+victoria_metrics_retention_period: "7d"
+
+victoria_metrics_grafana_enabled: true
+victoria_metrics_operator_enabled: true
+
+victoria_metrics_storage_enabled: true
+victoria_metrics_kubeconfig: /etc/kubernetes/admin.conf
+
+victoria_metrics_storage_node: worker.node
+victoria_metrics_storage_vg: ubuntu-vg
+victoria_metrics_storage_lv: victoria-metrics
+victoria_metrics_storage_size: 20g
+victoria_metrics_storage_path: /var/lib/victoria-metrics

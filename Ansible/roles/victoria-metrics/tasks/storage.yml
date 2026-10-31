@@ -1,0 +1,33 @@
+- name: Install LVM utilities
+  ansible.builtin.apt:
+    name: lvm2
+    state: present
+    update_cache: true
+
+- name: Create VictoriaMetrics logical volume
+  community.general.lvol:
+    vg: "{{ victoria_metrics_storage_vg }}"
+    lv: "{{ victoria_metrics_storage_lv }}"
+    size: "{{ victoria_metrics_storage_size }}"
+    state: present
+    shrink: false
+
+- name: Create ext4 filesystem
+  community.general.filesystem:
+    fstype: ext4
+    dev: "/dev/{{ victoria_metrics_storage_vg }}/{{ victoria_metrics_storage_lv }}"
+    state: present
+
+- name: Create VictoriaMetrics mountpoint
+  ansible.builtin.file:
+    path: "{{ victoria_metrics_storage_path }}"
+    state: directory
+    mode: "0755"
+
+- name: Mount VictoriaMetrics storage
+  ansible.posix.mount:
+    path: "{{ victoria_metrics_storage_path }}"
+    src: "/dev/{{ victoria_metrics_storage_vg }}/{{ victoria_metrics_storage_lv }}"
+    fstype: ext4
+    opts: defaults
+    state: mounted

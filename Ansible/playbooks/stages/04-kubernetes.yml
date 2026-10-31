@@ -21,3 +21,6 @@
 
 - name: Install ArgoCD into Cluster
   ansible.builtin.import_playbook: ../kubernetes/argocd.yml
+
+- name: Install VictoriaMetrics
+  ansible.builtin.import_playbook: ../kubernetes/victoria-metrics.yml

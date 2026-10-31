@@ -1,0 +1,38 @@
+---
+- name: Configure VictoriaMetrics storage
+  ansible.builtin.import_tasks: storage.yml
+  delegate_to: "{{ victoria_metrics_storage_node }}"
+  become: true
+  when: victoria_metrics_storage_enabled | bool
+
+- name: Create VictoriaMetrics PersistentVolume
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ lookup('template', 'pv.yaml.j2') | from_yaml }}"
+    kubeconfig: "{{ victoria_metrics_kubeconfig }}"
+
+- name: Add VictoriaMetrics Helm repository
+  kubernetes.core.helm_repository:
+    name: vm
+    repo_url: "{{ victoria_metrics_chart_repository }}"
+    state: present
+
+- name: Deploy VictoriaMetrics stack
+  kubernetes.core.helm:
+    name: "{{ victoria_metrics_release_name }}"
+    chart_ref: "vm/{{ victoria_metrics_chart_name }}"
+    chart_version: "{{ victoria_metrics_chart_version }}"
+    release_namespace: "{{ victoria_metrics_namespace }}"
+    create_namespace: true
+    values: "{{ lookup('template', 'values.yaml.j2') | from_yaml }}"
+    state: present
+    update_repo_cache: true
+    wait: true
+    wait_timeout: 10m0s
+    kubeconfig: "{{ victoria_metrics_kubeconfig }}"
+
+- name: Expose VictoriaMetrics Single via NodePort
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ lookup('template', 'vmsingle-nodeport.yaml.j2') | from_yaml }}"
+    kubeconfig: "{{ victoria_metrics_kubeconfig }}"
