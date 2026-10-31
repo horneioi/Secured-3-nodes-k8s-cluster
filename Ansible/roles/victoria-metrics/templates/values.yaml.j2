@@ -8,10 +8,25 @@ vmagent:
     scrapeInterval: 30s
 
 vmalert:
-  enabled: false
+  enabled: true
 
 alertmanager:
-  enabled: false
+  enabled: true
+  spec:
+    configSecret: alertmanager-telegram-config
+    extraEnvs:
+      - name: HTTP_PROXY
+        value: "{{ lookup('env', 'PROXY_HTTP_URL') }}"
+      - name: HTTPS_PROXY
+        value: "{{ lookup('env', 'PROXY_HTTP_URL') }}"
+      - name: http_proxy
+        value: "{{ lookup('env', 'PROXY_HTTP_URL') }}"
+      - name: https_proxy
+        value: "{{ lookup('env', 'PROXY_HTTP_URL') }}"
+      - name: NO_PROXY
+        value: "{{ no_proxy }}"
+      - name: no_proxy
+        value: "{{ no_proxy }}"
 
 grafana:
   enabled: {{ victoria_metrics_grafana_enabled | lower }}
@@ -37,3 +52,4 @@ vmsingle:
     type: NodePort
     servicePort: 8428
     nodePort: 32001
+

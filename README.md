@@ -14,4 +14,4 @@
     - ...
 ## Updates
 - 31.10.26: added Victoria Metrics
-- ToDo: Alerting tg
+- 1.11.26:  Alerting tg

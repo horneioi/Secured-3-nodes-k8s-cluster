@@ -17,6 +17,21 @@
     repo_url: "{{ victoria_metrics_chart_repository }}"
     state: present
 
+- name: Ensure monitoring namespace exists
+  kubernetes.core.k8s:
+    name: "{{ victoria_metrics_namespace }}"
+    api_version: v1
+    kind: Namespace
+    state: present
+    kubeconfig: "{{ victoria_metrics_kubeconfig }}"
+
+- name: Deploy Alertmanager Telegram configuration
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ lookup('template', 'alertmanager-config.yaml.j2') | from_yaml }}"
+    kubeconfig: "{{ victoria_metrics_kubeconfig }}"
+  no_log: true
+  
 - name: Deploy VictoriaMetrics stack
   kubernetes.core.helm:
     name: "{{ victoria_metrics_release_name }}"
