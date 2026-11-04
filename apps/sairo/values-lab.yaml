@@ -30,3 +30,6 @@ networkPolicy:
 
 nodeSelector:
   kubernetes.io/hostname: worker
+
+crawler:
+  recrawlInterval: 180

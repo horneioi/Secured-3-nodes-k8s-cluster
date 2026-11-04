@@ -9,7 +9,7 @@ spec:
   source:
     repoURL: https://github.com/horneioi/Secured-3-nodes-k8s-cluster.git
     targetRevision: main
-    path: argocd/applications
+    path: ArgoCD/applications
     directory:
       recurse: true
 
