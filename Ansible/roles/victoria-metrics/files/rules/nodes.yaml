@@ -1,0 +1,84 @@
+
+groups:
+  - name: node-cpu
+    interval: 15s
+    rules:
+      - record: node:cpu_utilization:ratio
+        expr: |
+          100 * (
+            1 - avg by (instance) (
+              rate(node_cpu_seconds_total{mode="idle"}[5m])
+            )
+          )
+  - name: node-memory
+    interval: 15s
+    rules:
+      - record: node:memory_used_bytes
+        expr: |
+          node_memory_MemTotal_bytes
+          - node_memory_MemAvailable_bytes
+
+      - record: node:memory_utilization:ratio
+        expr: |
+          100 * (
+            1 -
+            node_memory_MemAvailable_bytes
+            / node_memory_MemTotal_bytes
+          )
+  
+  - name: node-filesystem
+    interval: 15s
+    rules:
+      - record: node:filesystem_used_bytes
+        expr: |
+          node_filesystem_size_bytes{
+            fstype!~"tmpfs|devtmpfs|overlay|squashfs",
+            mountpoint!~"/run.*"
+          }
+          -
+          node_filesystem_avail_bytes{
+            fstype!~"tmpfs|devtmpfs|overlay|squashfs",
+            mountpoint!~"/run.*"
+          }
+
+      - record: node:filesystem_utilization:ratio
+        expr: |
+          100 * (
+            1 -
+            node_filesystem_avail_bytes{
+              fstype!~"tmpfs|devtmpfs|overlay|squashfs",
+              mountpoint!~"/run.*"
+            }
+            /
+            node_filesystem_size_bytes{
+              fstype!~"tmpfs|devtmpfs|overlay|squashfs",
+              mountpoint!~"/run.*"
+            }
+          )
+
+  - name: node-network
+    interval: 15s
+    rules:
+      - record: node:network_receive_bytes_per_second
+        expr: |
+          sum by (instance) (
+            rate(node_network_receive_bytes_total{device!="lo"}[5m])
+          )
+
+      - record: node:network_transmit_bytes_per_second
+        expr: |
+          sum by (instance) (
+            rate(node_network_transmit_bytes_total{device!="lo"}[5m])
+          )
+
+  - name: node-load
+    interval: 15s
+    rules:
+      - record: node:load1
+        expr: node_load1
+
+      - record: node:load5
+        expr: node_load5
+
+      - record: node:load15
+        expr: node_load15

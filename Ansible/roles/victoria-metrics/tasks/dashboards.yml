@@ -1,0 +1,16 @@
+- name: Deploy Grafana dashboards as ConfigMaps
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: "grafana-dashboard-{{ item | basename | splitext | first }}"
+        namespace: "{{ victoria_metrics_namespace }}"
+        labels:
+          grafana_dashboard: "1"
+      data: "{{ { (item | basename): lookup('ansible.builtin.file', item) } }}"
+    kubeconfig: "{{ victoria_metrics_kubeconfig }}"
+  loop: "{{ query('ansible.builtin.fileglob', role_path ~ '/files/dashboards/*.json') }}"
+  loop_control:
+    label: "{{ item | basename }}"

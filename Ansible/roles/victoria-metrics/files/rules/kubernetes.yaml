@@ -1,0 +1,112 @@
+
+groups:
+  - name: kubernetes-nodes
+    interval: 15s
+    rules:
+      - record: kubernetes:node_ready
+        expr: |
+          max by (node) (
+            kube_node_status_condition{
+              condition="Ready",
+              status="true"
+            }
+          )
+
+      - record: kubernetes:node_pod_capacity
+        expr: |
+          sum by (node) (
+            kube_node_status_capacity{resource="pods"}
+          )
+
+      - record: kubernetes:node_pod_allocatable
+        expr: |
+          sum by (node) (
+            kube_node_status_allocatable{resource="pods"}
+          )
+
+  - name: kubernetes-pods
+    interval: 15s
+    rules:
+      - record: kubernetes:pod_running
+        expr: |
+          sum by (namespace, pod) (
+            kube_pod_status_phase{phase="Running"}
+          )
+
+      - record: kubernetes:pod_restarts_total
+        expr: |
+          sum by (namespace, pod) (
+            kube_pod_container_status_restarts_total
+          )
+
+      - record: kubernetes:pod_container_ready
+        expr: |
+          sum by (namespace, pod) (
+            kube_pod_container_status_ready
+          )
+
+      - record: kubernetes:pod_container_count
+        expr: |
+          count by (namespace, pod) (
+            kube_pod_container_info
+          )
+
+  - name: kubernetes-workloads
+    interval: 15s
+    rules:
+      - record: kubernetes:deployment_replicas
+        expr: |
+          sum by (namespace, deployment) (
+            kube_deployment_spec_replicas
+          )
+
+      - record: kubernetes:deployment_available_replicas
+        expr: |
+          sum by (namespace, deployment) (
+            kube_deployment_status_replicas_available
+          )
+
+      - record: kubernetes:statefulset_replicas
+        expr: |
+          sum by (namespace, statefulset) (
+            kube_statefulset_replicas
+          )
+
+      - record: kubernetes:statefulset_ready_replicas
+        expr: |
+          sum by (namespace, statefulset) (
+            kube_statefulset_status_replicas_ready
+          )
+
+      - record: kubernetes:daemonset_desired
+        expr: |
+          sum by (namespace, daemonset) (
+            kube_daemonset_status_desired_number_scheduled
+          )
+
+      - record: kubernetes:daemonset_ready
+        expr: |
+          sum by (namespace, daemonset) (
+            kube_daemonset_status_number_ready
+          )
+
+  - name: kubernetes-resources
+    interval: 15s
+    rules:
+      - record: kubernetes:container_cpu_usage_cores
+        expr: |
+          sum by (namespace, pod, container) (
+            rate(container_cpu_usage_seconds_total{
+              container!="",
+              image!=""
+            }[5m])
+          )
+
+      - record: kubernetes:container_memory_working_set_bytes
+        expr: |
+          sum by (namespace, pod, container) (
+            container_memory_working_set_bytes{
+              container!="",
+              image!=""
+            }
+          )

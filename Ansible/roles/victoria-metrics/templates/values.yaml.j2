@@ -35,6 +35,12 @@ grafana:
     port: 80
     targetPort: 3000
     nodePort: 32000
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+      labelValue: "1"
+      searchNamespace: monitoring
 
 vmsingle:
   enabled: true

@@ -1,0 +1,15 @@
+- name: Apply VictoriaMetrics recording rules
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: operator.victoriametrics.com/v1beta1
+      kind: VMRule
+      metadata:
+        name: "{{ item | basename | regex_replace('.yaml$', '') }}"
+        namespace: "{{ victoria_metrics_namespace }}"
+      spec:
+        groups: "{{ (lookup('ansible.builtin.file', item) | from_yaml).groups }}"
+    kubeconfig: "{{ victoria_metrics_kubeconfig }}"
+  loop: "{{ query('ansible.builtin.fileglob', role_path ~ '/files/rules/*.yaml') }}"
+  loop_control:
+    label: "{{ item | basename }}"

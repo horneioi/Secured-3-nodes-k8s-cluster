@@ -1,0 +1,32 @@
+replicaCount: 1
+
+persistence:
+  enabled: true
+  storageClass: manual
+  accessMode: ReadWriteOnce
+  size: 5Gi
+  keep: true
+
+s3:
+  endpoint: "http://192.168.0.240:4566"
+  region: "eu-central-1"
+  accessKey: "test"
+  secretKey: "test"
+  pathStyle: true
+
+auth:
+  mode: local
+  adminUser: admin
+  adminPass: ""
+  jwtSecret: ""
+  sessionHours: 24
+  secureCookie: false
+
+telemetry:
+  enabled: false
+
+networkPolicy:
+  enabled: false
+
+nodeSelector:
+  kubernetes.io/hostname: worker

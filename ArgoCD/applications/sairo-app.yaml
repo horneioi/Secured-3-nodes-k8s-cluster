@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: sairo
+  namespace: argocd
+spec:
+  project: default
+
+  sources:
+    - repoURL: registry-1.docker.io/stephenjr002
+      chart: sairo-helm
+      targetRevision: 1.5.1
+      helm:
+        releaseName: sairo
+        valueFiles:
+          - $values/Kubernetes/apps/sairo/values.yaml
+
+    - repoURL: https://github.com/horneioi/Cloud-CV-DevOps-DevSecOps.git
+      targetRevision: main
+      ref: values
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: sairo
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

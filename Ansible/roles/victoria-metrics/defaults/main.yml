@@ -19,3 +19,4 @@ victoria_metrics_storage_vg: ubuntu-vg
 victoria_metrics_storage_lv: victoria-metrics
 victoria_metrics_storage_size: 20g
 victoria_metrics_storage_path: /var/lib/victoria-metrics
+

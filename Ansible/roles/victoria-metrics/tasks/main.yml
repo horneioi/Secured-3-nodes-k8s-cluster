@@ -51,3 +51,10 @@
     state: present
     definition: "{{ lookup('template', 'vmsingle-nodeport.yaml.j2') | from_yaml }}"
     kubeconfig: "{{ victoria_metrics_kubeconfig }}"
+
+
+- name: Deploy VictoriaMetrics recording rules
+  ansible.builtin.import_tasks: rules.yml
+
+- name: Deploy Grafana dashboards
+  ansible.builtin.import_tasks: dashboards.yml
