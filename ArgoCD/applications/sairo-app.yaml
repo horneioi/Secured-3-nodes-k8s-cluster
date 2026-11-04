@@ -13,7 +13,7 @@ spec:
       helm:
         releaseName: sairo
         valueFiles:
-          - - $values/apps/sairo/values-lab.yaml
+           - $values/apps/sairo/values-lab.yaml
 
     - repoURL: https://github.com/horneioi/Cloud-CV-DevOps-DevSecOps.git
       targetRevision: main
