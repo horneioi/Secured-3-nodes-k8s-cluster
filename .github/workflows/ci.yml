@@ -1,0 +1,47 @@
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install YAML linter
+        run: pip install yamllint
+
+      - name: Validate YAML
+        run: |
+          yamllint -d relaxed apps/ ArgoCD/
+
+      - name: Setup Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.17.3
+
+      - name: Pull Sairo chart
+        run: |
+          helm pull oci://registry-1.docker.io/stephenjr002/sairo-helm \
+            --version 1.5.1 \
+            --untar \
+            --untardir /tmp/charts
+
+      - name: Validate Helm templates
+        run: |
+          helm lint /tmp/charts/sairo-helm \
+            -f apps/sairo/values-lab.yaml
+
+          helm template sairo /tmp/charts/sairo-helm \
+            --namespace sairo \
+            -f apps/sairo/values-lab.yaml \
+            > /tmp/sairo-rendered.yaml
