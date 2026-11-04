@@ -6,7 +6,8 @@
 - install helm
 - install Ansible via apt
 - ansible-playbook Ansible/playbooks/site.yml -K # Then enter the password
-
+- enter API key from your tg-bot
+- enter chat id from your chat with tg-bot 
 ## Dependencies for running Ansible Scripts
     - Helm script
     - Ansible via apt
