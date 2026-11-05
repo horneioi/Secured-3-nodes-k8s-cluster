@@ -1,0 +1,13 @@
+Application {{ include "app-example.fullname" . }} has been deployed.
+
+To access it locally, run:
+
+  kubectl port-forward -n {{ .Release.Namespace }} \
+    svc/{{ include "app-example.fullname" . }} 8080:{{ .Values.service.port }}
+
+Then open:
+
+  http://127.0.0.1:8080
+
+Health check:
+  http://127.0.0.1:8080/healthz
