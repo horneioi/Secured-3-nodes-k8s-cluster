@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app-example
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/horneioi/Cloud-CV-DevOps-DevSecOps.git
+    targetRevision: main
+    path: apps/app-example/new-chart-example
+    helm:
+      releaseName: app-example
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: app-example
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
