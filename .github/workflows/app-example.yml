@@ -13,9 +13,7 @@ on:
       - "apps/app-example/**"
       - ".github/workflows/app-example.yml"
 
-permissions:
-  contents: read
-  packages: write
+
 
 env:
   REGISTRY: ghcr.io
@@ -51,6 +49,9 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      packages: write
 
     steps:
       - name: Checkout
