@@ -53,4 +53,4 @@ probes:
     initialDelaySeconds: 3
     periodSeconds: 5
 
-rolloutRevision: "1"
+rolloutRevision: "2"
