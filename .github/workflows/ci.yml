@@ -23,7 +23,12 @@ jobs:
 
       - name: Validate YAML
         run: |
-          yamllint -d relaxed apps/ ArgoCD/
+          find apps/ ArgoCD/ \
+            -type f \
+            \( -name '*.yaml' -o -name '*.yml' \) \
+            ! -path '*/templates/*' \
+            -print0 | xargs -0 yamllint -d relaxed
+
 
       - name: Setup Helm
         uses: azure/setup-helm@v4
@@ -46,3 +51,11 @@ jobs:
             --namespace sairo \
             -f apps/sairo/values-lab.yaml \
             > /tmp/sairo-rendered.yaml
+
+          helm lint apps/app-example/new-chart-example
+
+          helm template app-example apps/app-example/new-chart-example \
+            --namespace app-example \
+            > /tmp/app-example-rendered.yaml
+
+          yamllint -d relaxed /tmp/app-example-rendered.yaml
