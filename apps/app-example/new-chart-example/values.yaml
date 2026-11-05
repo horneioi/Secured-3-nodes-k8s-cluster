@@ -9,7 +9,7 @@ replicaCount: 1
 image:
   repository: ghcr.io/horneioi/app-example
   # This sets the pull policy for images.
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
 
@@ -52,3 +52,5 @@ probes:
     path: /readyz
     initialDelaySeconds: 3
     periodSeconds: 5
+
+rolloutRevision: "1"

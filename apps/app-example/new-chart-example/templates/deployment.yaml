@@ -4,7 +4,7 @@ metadata:
   name: {{ include "app-example.fullname" . }}
   labels:
     {{- include "app-example.labels" . | nindent 4 }}
-
+  
 spec:
   replicas: {{ .Values.replicaCount }}
 
@@ -16,6 +16,9 @@ spec:
     metadata:
       labels:
         {{- include "app-example.selectorLabels" . | nindent 8 }}
+      annotations:
+        rolloutRevision: {{ .Values.rolloutRevision | quote }}
+
 
     spec:
       automountServiceAccountToken: false

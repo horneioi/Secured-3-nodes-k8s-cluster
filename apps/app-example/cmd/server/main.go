@@ -79,7 +79,7 @@ func main() {
 	signal.Notify(stop, syscall.SIGINT, syscall.SIGTERM)
 
 	go func() {
-		log.Printf("Platform Demo API starting on port %s", port)
+		log.Printf("Platform Demo API - GitOps deployment v2 starting on port %s", port)
 
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("server error: %v", err)
