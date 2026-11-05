@@ -1,18 +1,70 @@
-# Cloud-CV-DevOps-DevSecOps
+# Roadmap — Модульная инфраструктура Kubernetes
 
-## Easy Starting Up:
-- prepare 3 VM's
-- add their data into 
-- install helm
-- install Ansible via apt
-- ansible-playbook Ansible/playbooks/site.yml -K # Then enter the password
-- enter API key from your tg-bot
-- enter chat id from your chat with tg-bot 
-## Dependencies for running Ansible Scripts
-    - Helm script
-    - Ansible via apt
-## Playbooks Description
-    - ...
-## Updates
-- 31.10.26: added Victoria Metrics
-- 1.11.26:  Alerting tg
+**Цель:** реализация модульной Kubernetes-инфраструктуры с автоматизированным развёртыванием, CI/CD, GitOps, масштабированием и централизованным мониторингом.
+
+## Текущее состояние
+
+**Обозначения:**
+- `[x]` — реализовано.
+- `[о]` — в процессе переноса или проверки.
+- `[ ]` — запланировано.
+
+- [x] Автоматизированная подготовка серверов через Ansible.
+- [x] Развёртывание Kubernetes control plane и подключение worker-нод.
+- [x] Установка и настройка Cilium.
+- [x] Развёртывание HashiCorp Vault.
+- [x] Развёртывание LocalStack и настройка S3-совместимого хранилища.
+- [x] Интеграция приложения с LocalStack S3.
+- [x] Развёртывание VictoriaMetrics и Grafana.
+- [x] Развёртывание Argo CD.
+- [x] GitOps-деплой приложения через Argo CD.
+- [x] Базовый CI на GitHub Actions: YAML и Helm validation.
+
+## План реализации
+
+### 1. CI/CD и Container Registry
+- [о] Сборка Docker-образов через GitHub Actions.
+- [о] Публикация образов в приватный GHCR.
+- [о] Версионирование образов через Git SHA.
+- [x] Автоматическое обновление GitOps-конфигурации.
+- [x] Деплой приложений через Argo CD.
+
+### 2. Масштабирование
+- [о] Terraform-модули для управления виртуальными машинами.
+- [о] Интеграция Terraform с Proxmox либо документирование текущей VMware-реализации.
+- [ ] Настройка HPA для Kubernetes workloads.
+- [ ] Проверка автоматического масштабирования под нагрузкой.
+
+### 3. Разделение окружений
+- [ ] Организация окружений test, preprod и prod.
+- [ ] Разделение Kubernetes namespaces и конфигураций.
+- [ ] Отдельные Helm values для каждого окружения.
+- [о] Шаблоны репозиториев и CI/CD pipelines.
+
+### 4. Мониторинг и алертинг
+- [x] Сбор метрик через VictoriaMetrics.
+- [x] Grafana dashboards.
+- [x] Проверка и настройка Alertmanager.
+- [о] Проверка метрик и алертов Kubernetes workloads.
+- [ ] Мониторинг HPA и масштабирования.
+
+### 5. Управление секретами
+- [x] Развёртывание HashiCorp Vault.
+- [ ]    Интеграция Vault с Kubernetes workloads.
+- [ ] Проверка получения секретов через External Secrets Operator или Vault Agent.
+
+## Целевой результат
+
+Единый воспроизводимый процесс развёртывания инфраструктуры и доставки приложений:
+
+- Terraform — управление виртуальной инфраструктурой.
+- Ansible — подготовка серверов и Kubernetes.
+- LocalStack S3 — S3-совместимое объектное хранилище для приложений.
+- HashiCorp Vault — централизованное управление секретами.
+- GitHub Actions — CI, сборка и публикация образов.
+- GHCR — приватный Container Registry.
+- Argo CD — GitOps/CD.
+- HPA — автоматическое масштабирование workloads.
+- VictoriaMetrics, Alertmanager и Grafana — мониторинг и алертинг.
+
+**Критерий демонстрации:** автоматизированное развёртывание Kubernetes-кластера, доставка приложения через CI/CD и Argo CD, масштабирование под нагрузкой и наблюдаемость инфраструктуры.
