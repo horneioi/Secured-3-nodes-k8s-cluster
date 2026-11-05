@@ -37,8 +37,8 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: apps/app-example/go.mod
-          cache-dependency-path: apps/app-example/go.sum
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
 
       - name: Test
         run: go test ./...
